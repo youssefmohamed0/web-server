@@ -5,7 +5,7 @@ import os
 
 closeThreads = False
 
-server_ip = "192.168.1.8"
+server_ip = sk.gethostbyname(sk.gethostname())
 server_port = 9999
 
 

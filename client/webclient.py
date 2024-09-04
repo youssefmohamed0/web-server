@@ -2,7 +2,7 @@ import socket as sk
 import time
 
 # myip.is
-ip = "192.168.1.8"  # if connecting to a server on a diffrent lan u need to use public ip
+ip = sk.gethostbyname(sk.gethostname())
 
 port = 9999
 
