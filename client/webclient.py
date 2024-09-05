@@ -79,41 +79,6 @@ Host: {ip}\r\n
         print('Failed to download file.')
 
 
-
-# while True:
-#     option = input("do you want get or post: ")
-
-#     if option == "get":
-#         sock.sendall("GET".encode())
-
-#         file_name = sock.recv(1024).decode()   # recieves response
-#         file_size = sock.recv(1024).decode()
-#         print(file_name)
-#         print(file_size)
-
-#         file_bytes = b""
-
-#         data = sock.recv(int(file_size))
-
-#         file_bytes+=data
-
-
-#         file = open(file_name,"wb")
-#         file.write(file_bytes)
-#         file.close()
-#     elif option == "post":
-
-#         file = open("received_image.jpg","rb")
-#         sock.sendall("POST".encode())
-
-#         sock.send("received_image.jpg".encode())
-#         file_size=os.path.getsize("received_image.jpg")
-#         sock.send(str(file_size).encode())
-#         message = file.read()
-#         sock.sendall(message)
-#         sock.send(b"<END>")
-
-
 if __name__ == '__main__':
     print("1) Send image")
     print("2) Recieve image")
