@@ -74,7 +74,7 @@ def download_file(filename):
         print('Failed to download file.')
 
 
-if __name__ == '__main__':
+while True:
     print("1) Send image")
     print("2) Recieve image")
     
