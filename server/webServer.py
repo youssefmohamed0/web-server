@@ -27,7 +27,7 @@ def proccess_request(client_socket):
     print(f"Received headers: {headers.decode()}")
 
     if request.startswith(b"GET"):
-        filename = re.search(r"/(\w+)", request.decode()).group(1)
+        filename = re.search(r"/(.+?) ", headers.decode()).group(1)
         file = open(f"{filename}","rb")
         file_bytes = file.read()
 
@@ -70,7 +70,7 @@ def proccess_request(client_socket):
         pass
     print("sending response to client")
     # print(request)
-    print(response.decode())
+    # print(response.decode())
     client_socket.sendall(response)
 
 

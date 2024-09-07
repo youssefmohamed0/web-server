@@ -20,7 +20,6 @@ def send_request(request_bytes):
     while b'\r\n\r\n' not in response:
         response += sock.recv(1024)
         print(response)
-    print("server recieved")
     print("client recieved")
 
 
@@ -56,7 +55,7 @@ def upload_file(filename,file_path):
 
 
 
-def download_file(filename, save_path):
+def download_file(filename):
     # file = open(os.path.join(save_path,filename),"wb")
     # file_bytes = file.read()
 
@@ -70,7 +69,7 @@ def download_file(filename, save_path):
     headers, body = host_response.split(b'\r\n\r\n', 1)
 
     if b"200 OK" in headers:
-        file = open(os.path.join(save_path,filename),"wb")
+        file = open(filename,"wb")
         file.write(body)
         file.close()
         print('File downloaded successfully.')
@@ -97,6 +96,5 @@ if __name__ == '__main__':
         upload_file(filename, file_path)
     if num == '2':
         filename = input("Enter file name: ")
-        save_path = input("Enter save path: ")
-        download_file(filename, save_path)
+        download_file(filename)
     
