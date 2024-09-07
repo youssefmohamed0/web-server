@@ -17,12 +17,16 @@ def send_request(request_bytes):
     response = b""
 
     print("client reciving now")
-    while b'<end>' not in response:
-        response += sock.recv(1024)
+    while True:
+        packet = sock.recv(1024)
+        print(packet)
+        if not packet:
+            break
+        response += packet
     print("client recieved")
 
 
-    sock.close()
+    # sock.close()
 
     return response
 
@@ -31,20 +35,20 @@ def upload_file(filename,file_path):
     file = open(file_path,"rb")
     file_bytes = file.read()
 
-    request = f"""
-POST /upload HTTP/1.1\r\n
-Host: {ip}\r\n
-Content-Length: {len(file_bytes)}\r\n
-Content-Type: application/socket-stream\r\n
-Content-Disposition: attachment; filename=\"{filename}\"\r\n
-<end>
-"""
+    request = (
+        f'POST /upload HTTP/1.1\r\n'
+        f'Host: {ip}\r\n'
+        f'Content-Length: {len(file_bytes)}\r\n'
+        f'Content-Type: application/octet-stream\r\n'
+        f'Content-Disposition: attachment; filename="{filename}"\r\n'
+        f'\r\n'
+    )
     request_bytes = request.encode() + file_bytes
 
     print("attempting to recieve response from server")
     host_response = send_request(request_bytes)
 
-    headers, body = host_response.split(b'<end>', 1)
+    headers, body = host_response.split(b'\r\n\r\n', 1)
 
     if b"200 OK" in headers:
         print('File uploaded successfully.')
@@ -58,14 +62,14 @@ def download_file(filename, save_path):
     # file = open(os.path.join(save_path,filename),"wb")
     # file_bytes = file.read()
 
-    request = f"""
-GET /{filename} HTTP/1.1\r\n
-Host: {ip}\r\n
-<end>
-""" 
+    request = (
+        f'GET /{filename} HTTP/1.1\r\n'
+        f'Host: {ip}\r\n'
+        f'\r\n'
+    )
     host_response = send_request(request.encode())
 
-    headers, body = host_response.split(b'<end>', 1)
+    headers, body = host_response.split(b'\r\n\r\n', 1)
 
     if b"200 OK" in headers:
         file = open(os.path.join(save_path,filename),"wb")
