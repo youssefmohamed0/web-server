@@ -2,7 +2,6 @@ import socket as sk
 import time
 import os
 
-# myip.is
 ip = sk.gethostbyname(sk.gethostname())
 
 port = 9999
@@ -16,14 +15,12 @@ def send_request(request_bytes):
 
     response = b""
 
-    print("client reciving now")
-    while b'\r\n\r\n' not in response:
+ 
+    while b'<end>' not in response:
         response += sock.recv(1024)
-        print(response)
-    print("client recieved")
 
 
-    # sock.close()
+    response = response.rstrip(b"world")
 
     return response
 
@@ -42,7 +39,6 @@ def upload_file(filename,file_path):
     )
     request_bytes = request.encode() + file_bytes
 
-    print("attempting to recieve response from server")
     host_response = send_request(request_bytes)
 
     headers, body = host_response.split(b'\r\n\r\n', 1)
@@ -56,8 +52,7 @@ def upload_file(filename,file_path):
 
 
 def download_file(filename):
-    # file = open(os.path.join(save_path,filename),"wb")
-    # file_bytes = file.read()
+
 
     request = (
         f'GET /{filename} HTTP/1.1\r\n'
@@ -69,6 +64,8 @@ def download_file(filename):
     headers, body = host_response.split(b'\r\n\r\n', 1)
 
     if b"200 OK" in headers:
+        if os.path.exists(filename):
+            os.remove(filename)
         file = open(filename,"wb")
         file.write(body)
         file.close()

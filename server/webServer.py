@@ -15,12 +15,10 @@ def proccess_request(client_socket):
 
     request = b""
     response = b""
-    print("server reciving now")
+
     while b'\r\n\r\n' not in request:
         request += client_socket.recv(1024)
-    print("server recieved")
 
-    print(request)
 
     headers, body = request.split(b'\r\n\r\n', 1)
 
@@ -28,6 +26,8 @@ def proccess_request(client_socket):
 
     if request.startswith(b"GET"):
         filename = re.search(r"/(.+?) ", headers.decode()).group(1)
+        if os.path.exists(filename):
+            os.remove(filename)
         file = open(f"{filename}","rb")
         file_bytes = file.read()
 
@@ -48,9 +48,9 @@ def proccess_request(client_socket):
 
         filename = re.search(r"filename=\"(.*?)\"", headers.decode()).group(1)
         size = int(re.search(r"Content-Length: (\d+)", headers.decode()).group(1))
-        # headers, body = request.split(b'\r\n\r\n', 1)
         body += client_socket.recv(size)
-
+        if os.path.exists(filename):
+            os.remove(filename)
         file = open(filename,"wb")
         file.write(body)
 
@@ -68,9 +68,8 @@ def proccess_request(client_socket):
 
     else:
         pass
-    print("sending response to client")
-    # print(request)
-    # print(response.decode())
+    response+=b"<end>"
+
     client_socket.sendall(response)
 
 
@@ -86,7 +85,6 @@ if __name__ == '__main__':
         print(f"connected to {client_add}")
     
         thread = threading.Thread(target=proccess_request,args=(client_socket,))
-        # response = proccess_request(request)    # byte form
-        # client_socket.sendall(response)
+
         thread.start()
 
