@@ -17,12 +17,10 @@ def send_request(request_bytes):
     response = b""
 
     print("client reciving now")
-    while True:
-        packet = sock.recv(1024)
-        print(packet)
-        if not packet:
-            break
-        response += packet
+    while b'\r\n\r\n' not in response:
+        response += sock.recv(1024)
+        print(response)
+    print("server recieved")
     print("client recieved")
 
 

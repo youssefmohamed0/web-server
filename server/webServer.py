@@ -49,7 +49,7 @@ def proccess_request(client_socket):
         filename = re.search(r"filename=\"(.*?)\"", headers.decode()).group(1)
         size = int(re.search(r"Content-Length: (\d+)", headers.decode()).group(1))
         # headers, body = request.split(b'\r\n\r\n', 1)
-        body = client_socket.recv(size)
+        body += client_socket.recv(size)
 
         file = open(filename,"wb")
         file.write(body)
